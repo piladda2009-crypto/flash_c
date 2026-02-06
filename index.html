@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Flashcards - 210 Words</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Sarabun & Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Sarabun:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Poppins', 'Sarabun', sans-serif;
+        }
+        
+        /* 3D Flip Animation Styles */
+        .perspective-1000 {
+            perspective: 1000px;
+        }
+        
+        .transform-style-3d {
+            transform-style: preserve-3d;
+        }
+        
+        .backface-hidden {
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+        
+        .rotate-y-180 {
+            transform: rotateY(180deg);
+        }
+
+        .card-inner {
+            transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+        }
+
+        /* Prevent text selection for better UX */
+        .no-select {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 min-h-screen flex flex-col items-center py-8 px-4 text-slate-800">
+
+    <!-- Header -->
+    <header class="mb-8 text-center">
+        <h1 class="text-3xl font-bold text-indigo-700 mb-2">English Flashcards</h1>
+        <p class="text-slate-500" id="set-indicator">ฝึกฝนคำศัพท์ 210 คำ</p>
+    </header>
+
+    <!-- Controls & Progress -->
+    <div class="w-full max-w-md flex justify-between items-center mb-6 text-sm font-medium text-slate-500">
+        <span id="counter">คำที่ 1 / 210</span>
+        <div class="flex gap-2">
+            <button onclick="shuffleCards()" id="btn-shuffle" class="flex items-center gap-1 px-3 py-1 rounded-full hover:bg-slate-200 transition-colors" title="สุ่มคำศัพท์">
+                <!-- Shuffle Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l14.2-12.6c.8-1 1.9-1.7 3.1-1.7H22"/><path d="M2 5h1.6c1.1 0 2 .5 2.6 1.3l2.4 3.2"/><path d="M14.6 14.3l2.4 3.2c.6.8 1.5 1.5 2.6 1.5H22"/></svg>
+                สุ่ม
+            </button>
+            <button onclick="resetCards()" id="btn-reset" class="flex items-center gap-1 px-3 py-1 rounded-full hover:bg-slate-200 transition-colors" title="เรียงตามปกติ">
+                <!-- Refresh Icon -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+                รีเซ็ต
+            </button>
+        </div>
+    </div>
+
+    <!-- Flashcard Area -->
+    <div class="relative w-full max-w-md h-80 perspective-1000 mb-8 group cursor-pointer no-select" onclick="flipCard()">
+        <div id="card-inner" class="card-inner relative w-full h-full transform-style-3d shadow-xl rounded-2xl">
+            
+            <!-- Front (English) -->
+            <div class="card-front absolute w-full h-full bg-white rounded-2xl border-b-4 border-indigo-500 flex flex-col justify-center items-center backface-hidden z-10">
+                <span class="absolute top-4 left-4 text-xs font-bold text-indigo-400 uppercase tracking-wider">English</span>
+                <h2 id="word-en" class="text-5xl font-bold text-slate-800 mb-4 text-center px-4">Accept</h2>
+                <button onclick="event.stopPropagation(); speakWord();" class="mt-4 p-3 rounded-full bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors" title="ฟังเสียงอ่าน">
+                    <!-- Volume Icon -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+                </button>
+                <p class="absolute bottom-6 text-slate-400 text-sm animate-pulse">แตะเพื่อดูคำแปล</p>
+            </div>
+
+            <!-- Back (Thai) -->
+            <div class="card-back absolute w-full h-full bg-indigo-600 rounded-2xl flex flex-col justify-center items-center backface-hidden rotate-y-180 text-white z-0">
+                <span class="absolute top-4 left-4 text-xs font-bold text-indigo-200 uppercase tracking-wider">Thai</span>
+                <h2 id="word-th" class="text-4xl font-bold text-center px-6 leading-relaxed">ยอมรับ</h2>
+                <p class="absolute bottom-6 text-indigo-200 text-sm opacity-70">แตะเพื่อกลับด้าน</p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="flex items-center gap-6 no-select">
+        <button onclick="prevCard()" class="p-4 rounded-full bg-white shadow-md text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all active:scale-95" title="ก่อนหน้า">
+            <!-- Chevron Left -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+        </button>
+
+        <div class="flex flex-col items-center">
+            <button onclick="flipCard()" id="btn-flip-text" class="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:bg-indigo-700 transition-all active:scale-95 mb-2 w-32">
+                ดูคำแปล
+            </button>
+            <span class="text-xs text-slate-400 hidden md:inline-block">กด Spacebar เพื่อพลิก</span>
+        </div>
+
+        <button onclick="nextCard()" class="p-4 rounded-full bg-white shadow-md text-slate-600 hover:bg-indigo-50 hover:text-indigo-600 transition-all active:scale-95" title="ถัดไป">
+            <!-- Chevron Right -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+        </button>
+    </div>
+
+    <div class="mt-12 text-center text-slate-400 text-sm">
+        <p>Tip: ลองออกเสียงตามทุกครั้งก่อนกดดูคำแปล</p>
+    </div>
+
+    <!-- Logic Script -->
+    <script>
+        // --- DATA: 210 English-Thai Vocabulary Words ---
+        const VOCABULARY_DATA = [
+            // Set 1: Common Verbs & Actions
+            { en: "Accept", th: "ยอมรับ" }, { en: "Achieve", th: "บรรลุเป้าหมาย" }, { en: "Admire", th: "ชื่นชม" },
+            { en: "Admit", th: "ยอมรับความจริง" }, { en: "Advise", th: "แนะนำ" }, { en: "Afford", th: "สามารถซื้อได้" },
+            { en: "Agree", th: "เห็นด้วย" }, { en: "Allow", th: "อนุญาต" }, { en: "Analyze", th: "วิเคราะห์" },
+            { en: "Announce", th: "ประกาศ" }, { en: "Apologize", th: "ขอโทษ" }, { en: "Appear", th: "ปรากฏ" },
+            { en: "Apply", th: "สมัคร / นำมาใช้" }, { en: "Appreciate", th: "ซาบซึ้ง / เห็นคุณค่า" }, { en: "Argue", th: "โต้เถียง" },
+            { en: "Arrange", th: "จัดเตรียม" }, { en: "Arrive", th: "มาถึง" }, { en: "Assume", th: "สันนิษฐาน" },
+            { en: "Attempt", th: "พยายาม" }, { en: "Attract", th: "ดึงดูดความสนใจ" }, { en: "Avoid", th: "หลีกเลี่ยง" },
+            { en: "Become", th: "กลายเป็น" }, { en: "Begin", th: "เริ่มต้น" }, { en: "Believe", th: "เชื่อ" },
+            { en: "Belong", th: "เป็นของ" }, { en: "Borrow", th: "ขอยืม" }, { en: "Build", th: "สร้าง" },
+            { en: "Calculate", th: "คำนวณ" }, { en: "Celebrate", th: "เฉลิมฉลอง" }, { en: "Challenge", th: "ท้าทาย" },
+
+            // Set 2: Business & Work
+            { en: "Benefit", th: "ผลประโยชน์" }, { en: "Budget", th: "งบประมาณ" }, { en: "Career", th: "อาชีพ" },
+            { en: "Client", th: "ลูกค้า" }, { en: "Colleague", th: "เพื่อนร่วมงาน" }, { en: "Company", th: "บริษัท" },
+            { en: "Competition", th: "การแข่งขัน" }, { en: "Contract", th: "สัญญา" }, { en: "Customer", th: "ลูกค้า (ผู้ซื้อ)" },
+            { en: "Deadline", th: "กำหนดส่งงาน" }, { en: "Decision", th: "การตัดสินใจ" }, { en: "Demand", th: "ความต้องการ" },
+            { en: "Develop", th: "พัฒนา" }, { en: "Director", th: "ผู้อำนวยการ" }, { en: "Document", th: "เอกสาร" },
+            { en: "Earn", th: "ได้รับ (รายได้)" }, { en: "Economy", th: "เศรษฐกิจ" }, { en: "Effort", th: "ความพยายาม" },
+            { en: "Employ", th: "ว่าจ้าง" }, { en: "Environment", th: "สภาพแวดล้อม" }, { en: "Equipment", th: "อุปกรณ์" },
+            { en: "Experience", th: "ประสบการณ์" }, { en: "Goal", th: "เป้าหมาย" }, { en: "Growth", th: "การเติบโต" },
+            { en: "Hire", th: "จ้างงาน" }, { en: "Improve", th: "ปรับปรุง" }, { en: "Income", th: "รายได้" },
+            { en: "Increase", th: "เพิ่มขึ้น" }, { en: "Industry", th: "อุตสาหกรรม" }, { en: "Interview", th: "สัมภาษณ์" },
+
+            // Set 3: Adjectives & Feelings
+            { en: "Able", th: "สามารถ" }, { en: "Active", th: "คล่องแคล่ว" }, { en: "Afraid", th: "กลัว" },
+            { en: "Amazing", th: "น่าทึ่ง" }, { en: "Angry", th: "โกรธ" }, { en: "Anxious", th: "กังวล" },
+            { en: "Available", th: "ว่าง / มีอยู่" }, { en: "Awful", th: "แย่มาก" }, { en: "Basic", th: "พื้นฐาน" },
+            { en: "Beautiful", th: "สวยงาม" }, { en: "Boring", th: "น่าเบื่อ" }, { en: "Brave", th: "กล้าหาญ" },
+            { en: "Bright", th: "สว่าง / ฉลาด" }, { en: "Busy", th: "ยุ่ง" }, { en: "Calm", th: "สงบ" },
+            { en: "Careful", th: "ระมัดระวัง" }, { en: "Cheap", th: "ราคาถูก" }, { en: "Clean", th: "สะอาด" },
+            { en: "Clear", th: "ชัดเจน" }, { en: "Clever", th: "ฉลาด / หลักแหลม" }, { en: "Common", th: "ทั่วไป" },
+            { en: "Complex", th: "ซับซ้อน" }, { en: "Confident", th: "มั่นใจ" }, { en: "Confused", th: "สับสน" },
+            { en: "Creative", th: "มีความคิดสร้างสรรค์" }, { en: "Crucial", th: "สำคัญมาก" }, { en: "Curious", th: "อยากรู้อยากเห็น" },
+            { en: "Dangerous", th: "อันตราย" }, { en: "Dark", th: "มืด" }, { en: "Deep", th: "ลึก" },
+
+            // Set 4: Academic & Abstract
+            { en: "Access", th: "การเข้าถึง" }, { en: "Account", th: "บัญชี / บรรยาย" }, { en: "Activity", th: "กิจกรรม" },
+            { en: "Addition", th: "การเพิ่ม" }, { en: "Advice", th: "คำแนะนำ" }, { en: "Agency", th: "หน่วยงาน / ตัวแทน" },
+            { en: "Analysis", th: "บทวิเคราะห์" }, { en: "Answer", th: "คำตอบ" }, { en: "Appeal", th: "ร้องเรียน / ดึงดูด" },
+            { en: "Approach", th: "เข้าหา / แนวทาง" }, { en: "Area", th: "พื้นที่" }, { en: "Argument", th: "การโต้เถียง" },
+            { en: "Art", th: "ศิลปะ" }, { en: "Article", th: "บทความ" }, { en: "Aspect", th: "แง่มุม" },
+            { en: "Association", th: "สมาคม" }, { en: "Attention", th: "ความสนใจ" }, { en: "Attitude", th: "ทัศนคติ" },
+            { en: "Audience", th: "ผู้ชม" }, { en: "Author", th: "ผู้เขียน" }, { en: "Authority", th: "อำนาจหน้าที่" },
+            { en: "Balance", th: "สมดุล" }, { en: "Basis", th: "พื้นฐาน" }, { en: "Behavior", th: "พฤติกรรม" },
+            { en: "Cause", th: "สาเหตุ" }, { en: "Century", th: "ศตวรรษ" }, { en: "Change", th: "การเปลี่ยนแปลง" },
+            { en: "Character", th: "ตัวละคร / ลักษณะนิสัย" }, { en: "Choice", th: "ทางเลือก" }, { en: "Circumstance", th: "สถานการณ์" },
+
+            // Set 5: Places & Travel
+            { en: "Abroad", th: "ต่างประเทศ" }, { en: "Accommodation", th: "ที่พัก" }, { en: "Airport", th: "สนามบิน" },
+            { en: "Arrival", th: "การมาถึง" }, { en: "Bridge", th: "สะพาน" }, { en: "Capital", th: "เมืองหลวง / เงินทุน" },
+            { en: "Center", th: "ศูนย์กลาง" }, { en: "City", th: "เมือง" }, { en: "Community", th: "ชุมชน" },
+            { en: "Country", th: "ประเทศ" }, { en: "Culture", th: "วัฒนธรรม" }, { en: "Currency", th: "สกุลเงิน" },
+            { en: "Customs", th: "ศุลกากร / ธรรมเนียม" }, { en: "Departure", th: "การออกเดินทาง" }, { en: "Destination", th: "จุดหมายปลายทาง" },
+            { en: "Direction", th: "ทิศทาง" }, { en: "Distance", th: "ระยะทาง" }, { en: "District", th: "เขต / อำเภอ" },
+            { en: "Domestic", th: "ภายในประเทศ" }, { en: "Entrance", th: "ทางเข้า" }, { en: "Foreign", th: "ต่างประเทศ" },
+            { en: "Guide", th: "มัคคุเทศก์ / แนะนำ" }, { en: "Hotel", th: "โรงแรม" }, { en: "Journey", th: "การเดินทาง" },
+            { en: "Landscape", th: "ภูมิทัศน์" }, { en: "Location", th: "สถานที่ตั้ง" }, { en: "Luggage", th: "สัมภาระ" },
+            { en: "Map", th: "แผนที่" }, { en: "Museum", th: "พิพิธภัณฑ์" }, { en: "Nation", th: "ชาติ" },
+
+            // Set 6: Daily Life & Objects
+            { en: "Address", th: "ที่อยู่" }, { en: "Amount", th: "จำนวน" }, { en: "Animal", th: "สัตว์" },
+            { en: "Apartment", th: "อพาร์ตเมนต์" }, { en: "Application", th: "ใบสมัคร / แอปพลิเคชัน" }, { en: "Appointment", th: "การนัดหมาย" },
+            { en: "Article", th: "สิ่งของ / บทความ" }, { en: "Attention", th: "ความใส่ใจ" }, { en: "Bag", th: "กระเป๋า" },
+            { en: "Battery", th: "แบตเตอรี่" }, { en: "Bed", th: "เตียง" }, { en: "Bill", th: "บิล / ใบแจ้งหนี้" },
+            { en: "Board", th: "กระดาน" }, { en: "Book", th: "หนังสือ" }, { en: "Box", th: "กล่อง" },
+            { en: "Brand", th: "ยี่ห้อ" }, { en: "Building", th: "ตึก / อาคาร" }, { en: "Camera", th: "กล้อง" },
+            { en: "Card", th: "บัตร / การ์ด" }, { en: "Case", th: "กรณี / กล่องใส่" }, { en: "Chair", th: "เก้าอี้" },
+            { en: "Clothes", th: "เสื้อผ้า" }, { en: "Computer", th: "คอมพิวเตอร์" }, { en: "Corner", th: "มุม" },
+            { en: "Course", th: "หลักสูตร" }, { en: "Cup", th: "ถ้วย" }, { en: "Date", th: "วันที่ / การออกเดท" },
+            { en: "Design", th: "การออกแบบ" }, { en: "Desk", th: "โต๊ะทำงาน" }, { en: "Detail", th: "รายละเอียด" },
+
+            // Set 7: Time & Connectors
+            { en: "After", th: "หลังจาก" }, { en: "Always", th: "เสมอ" }, { en: "Before", th: "ก่อน" },
+            { en: "Current", th: "ปัจจุบัน" }, { en: "Daily", th: "รายวัน" }, { en: "During", th: "ในระหว่าง" },
+            { en: "Early", th: "แต่เช้า / ก่อนกำหนด" }, { en: "Event", th: "เหตุการณ์" }, { en: "Final", th: "สุดท้าย" },
+            { en: "First", th: "ลำดับแรก" }, { en: "Former", th: "ก่อนหน้านี้ / อดีต" }, { en: "Frequent", th: "บ่อยครั้ง" },
+            { en: "Future", th: "อนาคต" }, { en: "General", th: "ทั่วไป" }, { en: "History", th: "ประวัติศาสตร์" },
+            { en: "Hour", th: "ชั่วโมง" }, { en: "Immediate", th: "ทันที" }, { en: "Last", th: "สุดท้าย / ที่แล้ว" },
+            { en: "Late", th: "สาย / ดึก" }, { en: "Later", th: "ภายหลัง" }, { en: "Moment", th: "ชั่วขณะ" },
+            { en: "Month", th: "เดือน" }, { en: "Morning", th: "ตอนเช้า" }, { en: "Never", th: "ไม่เคย" },
+            { en: "Next", th: "ถัดไป" }, { en: "Often", th: "บ่อยๆ" }, { en: "Past", th: "อดีต" },
+            { en: "Period", th: "ช่วงเวลา" }, { en: "Present", th: "ปัจจุบัน / ของขวัญ" }, { en: "Recently", th: "เมื่อเร็วๆ นี้" }
+        ];
+
+        // --- STATE & VARIABLES ---
+        let currentCards = [...VOCABULARY_DATA];
+        let currentIndex = 0;
+        let isFlipped = false;
+        let isShuffled = false;
+
+        // --- DOM ELEMENTS ---
+        const cardInner = document.getElementById('card-inner');
+        const wordEn = document.getElementById('word-en');
+        const wordTh = document.getElementById('word-th');
+        const counter = document.getElementById('counter');
+        const btnFlipText = document.getElementById('btn-flip-text');
+        const setIndicator = document.getElementById('set-indicator');
+        const btnShuffle = document.getElementById('btn-shuffle');
+        const btnReset = document.getElementById('btn-reset');
+
+        // --- FUNCTIONS ---
+
+        function updateUI() {
+            const card = currentCards[currentIndex];
+            wordEn.textContent = card.en;
+            wordTh.textContent = card.th;
+            
+            // Reset Flip State
+            isFlipped = false;
+            cardInner.classList.remove('rotate-y-180');
+            btnFlipText.textContent = "ดูคำแปล";
+            
+            // Update Counters
+            counter.textContent = `คำที่ ${currentIndex + 1} / ${currentCards.length}`;
+            const setNum = Math.floor(currentIndex / 30) + 1;
+            setIndicator.textContent = `ฝึกฝนคำศัพท์ 210 คำ (ชุดที่ ${setNum})`;
+
+            // Update Toggle Button Styles
+            if (isShuffled) {
+                btnShuffle.classList.add('bg-indigo-100', 'text-indigo-700');
+            } else {
+                btnShuffle.classList.remove('bg-indigo-100', 'text-indigo-700');
+            }
+        }
+
+        function flipCard() {
+            isFlipped = !isFlipped;
+            if (isFlipped) {
+                cardInner.classList.add('rotate-y-180');
+                btnFlipText.textContent = "ปิดคำแปล";
+                // Optional: speakWord(); // Speak automatically when flipped
+            } else {
+                cardInner.classList.remove('rotate-y-180');
+                btnFlipText.textContent = "ดูคำแปล";
+            }
+        }
+
+        function nextCard() {
+            cardInner.classList.remove('rotate-y-180'); // Quick flip back
+            setTimeout(() => {
+                currentIndex = (currentIndex + 1) % currentCards.length;
+                updateUI();
+            }, 200);
+        }
+
+        function prevCard() {
+            cardInner.classList.remove('rotate-y-180');
+            setTimeout(() => {
+                currentIndex = (currentIndex - 1 + currentCards.length) % currentCards.length;
+                updateUI();
+            }, 200);
+        }
+
+        function shuffleCards() {
+            isFlipped = false;
+            cardInner.classList.remove('rotate-y-180');
+            
+            setTimeout(() => {
+                // Fisher-Yates Shuffle
+                for (let i = currentCards.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [currentCards[i], currentCards[j]] = [currentCards[j], currentCards[i]];
+                }
+                currentIndex = 0;
+                isShuffled = true;
+                updateUI();
+            }, 300);
+        }
+
+        function resetCards() {
+            isFlipped = false;
+            cardInner.classList.remove('rotate-y-180');
+            
+            setTimeout(() => {
+                currentCards = [...VOCABULARY_DATA]; // Restore original order
+                currentIndex = 0;
+                isShuffled = false;
+                updateUI();
+            }, 300);
+        }
+
+        function speakWord() {
+            const text = currentCards[currentIndex].en;
+            if ('speechSynthesis' in window) {
+                // Cancel current speech if any
+                window.speechSynthesis.cancel();
+                
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                window.speechSynthesis.speak(utterance);
+            } else {
+                alert("Browser does not support Text-to-Speech");
+            }
+        }
+
+        // --- KEYBOARD CONTROLS ---
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextCard();
+            if (e.key === 'ArrowLeft') prevCard();
+            if (e.key === ' ' || e.key === 'Enter') {
+                e.preventDefault(); // Prevent page scroll
+                flipCard();
+            }
+        });
+
+        // --- INITIALIZATION ---
+        updateUI();
+
+    </script>
+</body>
+</html>
